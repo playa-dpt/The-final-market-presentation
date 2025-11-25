@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { SALES_PLANS } from '../constants';
 import { 
-  Phone, CheckCircle, AlertOctagon, Calendar, 
-  BarChart2, Store, MessageSquare, ChevronDown, ChevronUp, Target, TrendingUp, AlertTriangle 
+  CheckCircle, AlertOctagon, Calendar, 
+  BarChart2, Store, MessageSquare, ChevronDown, ChevronUp, Target, TrendingUp, AlertTriangle, ArrowRight 
 } from 'lucide-react';
 import { 
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Legend 
@@ -20,7 +20,7 @@ const SalesTactics: React.FC = () => {
   };
 
   return (
-    <div className="space-y-8 animate-in slide-in-from-bottom duration-500">
+    <div className="space-y-8">
       <div className="border-b border-gray-200 pb-4">
         <h2 className="text-2xl font-bold text-gray-900">全球销售实操计划 (Execution)</h2>
         <p className="text-gray-500 mt-1">分区域、分阶段的落地执行方案，强调合规前提下的转化。</p>
@@ -58,34 +58,34 @@ const SalesTactics: React.FC = () => {
             <div className="p-6 grid grid-cols-1 xl:grid-cols-3 gap-8">
               
               {/* COLUMN 1: Battle Cards (Scripts) */}
-              <div className="xl:col-span-1 space-y-6">
+              <div className="xl:col-span-1 space-y-6 min-w-0">
                  <div className="bg-indigo-50 p-5 rounded-xl border border-indigo-100 h-full">
                    <h4 className="text-xs font-bold text-indigo-800 uppercase tracking-wider mb-4 flex items-center">
                      <MessageSquare size={14} className="mr-1.5" /> 痛点打击军火库 (Battle Cards)
                    </h4>
                    <div className="space-y-4">
                      {plan.scripts.map((script, sIdx) => (
-                       <div key={sIdx} className="bg-white p-4 rounded-lg shadow-sm border border-indigo-50">
+                       <div key={sIdx} className="bg-white p-4 rounded-lg shadow-sm border border-indigo-50 transition-transform hover:-translate-y-1 duration-200">
                          <div className="flex items-center text-xs font-bold text-red-500 mb-2">
                            <Target size={12} className="mr-1" /> 客户痛点: {script.painPoint}
                          </div>
-                         <p className="text-sm text-slate-700 font-medium italic mb-3">
+                         <p className="text-sm text-slate-700 font-medium italic mb-3 relative pl-3 border-l-2 border-indigo-200">
                            "{script.script}"
                          </p>
-                         <div className="text-xs text-gray-400 bg-gray-50 p-2 rounded border border-gray-100">
-                           <span className="font-bold">🧠 心理学原理:</span> {script.psychology}
+                         <div className="text-[10px] text-gray-500 bg-gray-50 p-2 rounded border border-gray-100 flex items-start">
+                           <span className="font-bold mr-1">🧠 心理学:</span> {script.psychology}
                          </div>
                        </div>
                      ))}
                    </div>
                    
-                   <div className="mt-6">
+                   <div className="mt-6 pt-4 border-t border-indigo-100">
                      <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 flex items-center">
                        <Store size={14} className="mr-1.5" /> 渠道主攻方向
                      </h4>
                      <div className="flex flex-wrap gap-2">
                        {plan.channels.map((channel, cIdx) => (
-                         <span key={cIdx} className="px-3 py-1 bg-white border border-gray-200 rounded-full text-xs text-gray-600 font-medium">
+                         <span key={cIdx} className="px-3 py-1 bg-white border border-gray-200 rounded-full text-xs text-gray-600 font-medium shadow-sm">
                            {channel.type}: {channel.focus}
                          </span>
                        ))}
@@ -95,15 +95,16 @@ const SalesTactics: React.FC = () => {
               </div>
 
               {/* COLUMN 2: Interactive Timeline & Stats */}
-              <div className="xl:col-span-2 flex flex-col space-y-8">
+              <div className="xl:col-span-2 flex flex-col space-y-8 min-w-0">
                 
                 {/* Timeline */}
                 <div>
                    <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 flex items-center">
-                     <Calendar size={14} className="mr-1.5" /> 分阶段执行路径 (点击展开)
+                     <Calendar size={14} className="mr-1.5" /> 分阶段执行路径 (点击展开详情)
                    </h4>
                    
-                   <div className="space-y-4 relative pl-4">
+                   <div className="space-y-0 relative pl-4">
+                     {/* Vertical Line */}
                      <div className="absolute left-4 top-4 bottom-4 w-0.5 bg-gray-100"></div>
 
                      {plan.phases.map((phase, pIdx) => {
@@ -113,41 +114,59 @@ const SalesTactics: React.FC = () => {
                        return (
                          <div 
                             key={pIdx} 
-                            className={`relative pl-8 transition-all duration-300 ${isExpanded ? 'mb-6' : 'mb-2'}`}
+                            className="relative pl-8 mb-4"
                          >
+                           {/* Timeline Dot */}
                            <div 
                              onClick={() => togglePhase(phaseId)}
-                             className={`absolute left-[11px] top-0 w-4 h-4 rounded-full border-2 cursor-pointer z-10 transition-colors ${isExpanded ? 'bg-emerald-500 border-emerald-500' : 'bg-white border-gray-300 hover:border-emerald-400'}`}
+                             className={`absolute left-[11px] top-5 w-4 h-4 rounded-full border-2 cursor-pointer z-10 transition-all duration-300 ${isExpanded ? 'bg-emerald-500 border-emerald-500 scale-110' : 'bg-white border-gray-300 hover:border-emerald-400'}`}
                            ></div>
                            
                            <div 
-                             onClick={() => togglePhase(phaseId)}
-                             className={`bg-white border rounded-lg p-4 cursor-pointer transition-all hover:shadow-md ${isExpanded ? 'border-emerald-200 shadow-md ring-1 ring-emerald-100' : 'border-gray-200'}`}
+                             className={`bg-white border rounded-xl overflow-hidden transition-all duration-300 ${isExpanded ? 'border-emerald-300 shadow-md ring-1 ring-emerald-100' : 'border-gray-200 hover:border-gray-300'}`}
                            >
-                             <div className="flex justify-between items-center">
+                             {/* Phase Header */}
+                             <div 
+                               onClick={() => togglePhase(phaseId)}
+                               className="p-4 cursor-pointer flex justify-between items-center bg-white"
+                             >
                                <div>
-                                 <h5 className="font-bold text-gray-900">{phase.phaseName}</h5>
-                                 <span className="text-xs text-gray-500 font-mono">{phase.timeframe}</span>
+                                 <h5 className="font-bold text-gray-900 text-base">{phase.phaseName}</h5>
+                                 <div className="flex items-center text-xs text-gray-500 mt-1 font-mono">
+                                   <Calendar size={12} className="mr-1"/> {phase.timeframe}
+                                 </div>
                                </div>
-                               {isExpanded ? <ChevronUp size={18} className="text-gray-400"/> : <ChevronDown size={18} className="text-gray-400"/>}
-                             </div>
-                             
-                             {/* KPIs always visible */}
-                             <div className="mt-3 flex items-center text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-1 rounded inline-block">
-                               <BarChart2 size={12} className="mr-1.5" />
-                               KPI: {phase.kpi}
+                               <div className="flex items-center space-x-3">
+                                 {/* KPIs always visible */}
+                                 <div className="hidden sm:flex items-center text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-100">
+                                   <BarChart2 size={12} className="mr-1.5" />
+                                   KPI: {phase.kpi}
+                                 </div>
+                                 <div className={`transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>
+                                   <ChevronDown size={20} className="text-gray-400"/>
+                                 </div>
+                               </div>
                              </div>
 
-                             {/* Expanded Details */}
-                             {isExpanded && (
-                               <div className="mt-4 pt-4 border-t border-gray-100 animate-in fade-in slide-in-from-top-2 duration-200">
-                                 <div className="space-y-4">
+                             {/* Expanded Details - Using grid transition for smooth height animation */}
+                             <div className={`grid transition-[grid-template-rows] duration-300 ease-in-out ${isExpanded ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}>
+                               <div className="overflow-hidden bg-slate-50/50">
+                                 <div className="p-5 border-t border-gray-100 space-y-5">
+                                   
+                                   {/* Mobile KPI (visible only when expanded on mobile) */}
+                                   <div className="sm:hidden flex items-center text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-2 rounded-lg border border-emerald-100 mb-4">
+                                     <BarChart2 size={14} className="mr-2" />
+                                     目标 KPI: {phase.kpi}
+                                   </div>
+
                                    <div>
-                                     <span className="text-xs font-bold text-gray-400 uppercase block mb-2">主要动作</span>
+                                     <span className="text-xs font-bold text-gray-400 uppercase block mb-2 flex items-center">
+                                       <CheckCircle size={12} className="mr-1"/> 核心动作
+                                     </span>
                                      <ul className="space-y-2">
                                        {phase.actions.map((action, aIdx) => (
-                                         <li key={aIdx} className="text-sm text-gray-700 flex items-start">
-                                           <CheckCircle size={14} className="text-emerald-500 mr-2 mt-0.5 flex-shrink-0" />
+                                         <li key={aIdx} className="text-sm text-gray-800 flex items-start bg-white p-2 rounded border border-gray-100 shadow-sm">
+                                           <span className="text-emerald-500 font-bold mr-2">Step {aIdx + 1}.</span>
                                            {action}
                                          </li>
                                        ))}
@@ -156,11 +175,13 @@ const SalesTactics: React.FC = () => {
 
                                    {phase.subActions && (
                                      <div>
-                                       <span className="text-xs font-bold text-gray-400 uppercase block mb-2">微观执行 (Sub-actions)</span>
+                                       <span className="text-xs font-bold text-gray-400 uppercase block mb-2 flex items-center">
+                                         <ArrowRight size={12} className="mr-1"/> 微观执行 (Execution Details)
+                                       </span>
                                        <ul className="grid grid-cols-1 md:grid-cols-2 gap-2">
                                          {phase.subActions.map((sub, sIdx) => (
-                                            <li key={sIdx} className="text-xs text-gray-600 bg-gray-50 px-2 py-1.5 rounded border border-gray-100 flex items-center">
-                                              <span className="w-1.5 h-1.5 bg-gray-400 rounded-full mr-2"></span>
+                                            <li key={sIdx} className="text-xs text-gray-600 bg-white px-3 py-2 rounded border border-gray-200 flex items-center hover:border-emerald-300 transition-colors">
+                                              <span className="w-1.5 h-1.5 bg-gray-400 rounded-full mr-2 flex-shrink-0"></span>
                                               {sub}
                                             </li>
                                          ))}
@@ -169,17 +190,19 @@ const SalesTactics: React.FC = () => {
                                    )}
 
                                    {phase.managerNote && (
-                                     <div className="bg-amber-50 p-3 rounded border border-amber-100 flex items-start">
-                                        <AlertTriangle size={16} className="text-amber-500 mr-2 mt-0.5 flex-shrink-0" />
+                                     <div className="bg-amber-50 p-3 rounded-lg border border-amber-200 flex items-start">
+                                        <div className="bg-amber-100 p-1.5 rounded-full mr-3 flex-shrink-0">
+                                          <AlertTriangle size={14} className="text-amber-600" />
+                                        </div>
                                         <div>
-                                          <span className="text-xs font-bold text-amber-800 block">经理批注</span>
-                                          <p className="text-xs text-amber-700">{phase.managerNote}</p>
+                                          <span className="text-xs font-bold text-amber-800 block mb-1">经理批注 (Manager Note)</span>
+                                          <p className="text-xs text-amber-800 leading-relaxed">{phase.managerNote}</p>
                                         </div>
                                      </div>
                                    )}
                                  </div>
                                </div>
-                             )}
+                             </div>
                            </div>
                          </div>
                        );
@@ -187,34 +210,37 @@ const SalesTactics: React.FC = () => {
                    </div>
                 </div>
 
-                {/* Chart Area */}
-                <div className="bg-white rounded-xl border border-gray-200 p-4 h-64">
+                {/* Chart Area - Enhanced for mobile stability */}
+                <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm min-w-0">
                   <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 flex items-center">
                     <TrendingUp size={14} className="mr-1.5" /> 销量增长预测 (vs 竞品)
                   </h4>
-                  <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={plan.chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                      <defs>
-                        <linearGradient id={`colorSales-${index}`} x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#10b981" stopOpacity={0.8}/>
-                          <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
-                        </linearGradient>
-                        <linearGradient id={`colorComp-${index}`} x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#94a3b8" stopOpacity={0.8}/>
-                          <stop offset="95%" stopColor="#94a3b8" stopOpacity={0}/>
-                        </linearGradient>
-                      </defs>
-                      <XAxis dataKey="name" fontSize={12} tickLine={false} axisLine={false} />
-                      <YAxis fontSize={12} tickLine={false} axisLine={false} />
-                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                      <RechartsTooltip 
-                        contentStyle={{ backgroundColor: '#1e293b', border: 'none', borderRadius: '8px', color: '#fff' }}
-                      />
-                      <Area type="monotone" dataKey="sales" name="Guptomes 销量" stroke="#10b981" fillOpacity={1} fill={`url(#colorSales-${index})`} strokeWidth={2} />
-                      <Area type="monotone" dataKey="competitor" name="竞品销量" stroke="#94a3b8" fillOpacity={1} fill={`url(#colorComp-${index})`} strokeWidth={2} />
-                      <Legend wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }}/>
-                    </AreaChart>
-                  </ResponsiveContainer>
+                  {/* Fixed height container using tailwind and min-w-0 for flex children */}
+                  <div className="h-[300px] w-full relative min-w-0">
+                    <ResponsiveContainer width="100%" height="100%" minWidth={100} minHeight={100}>
+                      <AreaChart data={plan.chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                        <defs>
+                          <linearGradient id={`colorSales-${index}`} x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="#10b981" stopOpacity={0.8}/>
+                            <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                          </linearGradient>
+                          <linearGradient id={`colorComp-${index}`} x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="#94a3b8" stopOpacity={0.8}/>
+                            <stop offset="95%" stopColor="#94a3b8" stopOpacity={0}/>
+                          </linearGradient>
+                        </defs>
+                        <XAxis dataKey="name" fontSize={12} tickLine={false} axisLine={false} />
+                        <YAxis fontSize={12} tickLine={false} axisLine={false} />
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                        <RechartsTooltip 
+                          contentStyle={{ backgroundColor: '#1e293b', border: 'none', borderRadius: '8px', color: '#fff', fontSize: '12px' }}
+                        />
+                        <Area type="monotone" dataKey="sales" name="Guptomes 销量" stroke="#10b981" fillOpacity={1} fill={`url(#colorSales-${index})`} strokeWidth={2} />
+                        <Area type="monotone" dataKey="competitor" name="竞品销量" stroke="#94a3b8" fillOpacity={1} fill={`url(#colorComp-${index})`} strokeWidth={2} />
+                        <Legend wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }}/>
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
                 </div>
               </div>
 

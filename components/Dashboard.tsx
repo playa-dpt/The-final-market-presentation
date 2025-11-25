@@ -39,7 +39,7 @@ const CustomTooltip = ({ active, payload }: any) => {
 
 const Dashboard: React.FC = () => {
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
+    <div className="space-y-8">
       <div className="flex flex-col md:flex-row justify-between items-end">
         <div>
           <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Guptomes 决策看板</h1>
@@ -89,8 +89,8 @@ const Dashboard: React.FC = () => {
 
       {/* Main Analysis Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Chart */}
-        <div className="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        {/* Chart - Replaced flex container with fixed height block */}
+        <div className="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-gray-100 min-w-0 flex flex-col">
           <div className="flex justify-between items-center mb-6">
             <div>
               <h3 className="text-lg font-bold text-gray-900">Guptomes 市场机会矩阵</h3>
@@ -101,8 +101,9 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
           
-          <div className="h-80 w-full">
-            <ResponsiveContainer width="100%" height="100%">
+          {/* Enhanced Chart Container for Mobile Stability */}
+          <div className="h-[400px] w-full relative min-w-0">
+            <ResponsiveContainer width="100%" height="100%" minWidth={100} minHeight={100}>
               <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                 <XAxis 
@@ -145,12 +146,13 @@ const Dashboard: React.FC = () => {
         </div>
 
         {/* Action List */}
-        <div className="bg-slate-900 p-6 rounded-2xl shadow-lg text-white flex flex-col">
+        <div className="bg-slate-900 p-6 rounded-2xl shadow-lg text-white flex flex-col min-w-0 h-full max-h-[500px] lg:max-h-[550px]">
           <h3 className="text-lg font-bold mb-1 flex items-center"><Info className="mr-2 text-emerald-400" size={20}/> 决策建议</h3>
           <p className="text-slate-400 text-sm mb-6">基于 GMI 指数的优先级排序</p>
           
           <div className="space-y-5 flex-1 overflow-y-auto pr-2 custom-scrollbar">
-            {MARKET_SCORES.sort((a,b) => b.totalScore - a.totalScore).map((market, idx) => (
+            {/* FIX: Use [...MARKET_SCORES] to create a copy before sorting to avoid mutating read-only constant */}
+            {[...MARKET_SCORES].sort((a,b) => b.totalScore - a.totalScore).map((market, idx) => (
               <div key={market.region} className="flex items-start relative">
                 <span className={`absolute -left-2 top-0 bottom-0 w-0.5 rounded-full ${idx === 0 ? 'bg-emerald-500' : 'bg-slate-700'}`}></span>
                 <div className="ml-3">
